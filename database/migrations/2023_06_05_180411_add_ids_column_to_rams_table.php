@@ -1,0 +1,35 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::table('rams', function (Blueprint $table) {
+            $table->integer('ids')->unsigned()->nullable();
+        });
+
+        // Копирование значений из столбца 'id' в столбец 'ids'
+        DB::statement('UPDATE rams SET ids = id');
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('rams', function (Blueprint $table) {
+            $table->dropColumn('ids');
+        });
+    }
+};

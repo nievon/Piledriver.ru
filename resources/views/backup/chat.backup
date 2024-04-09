@@ -1,0 +1,73 @@
+@extends('layouts.app')
+
+@section('content')
+<div id="chat-container">
+    <div id="chat-messages">
+        <!-- Здесь будут отображаться сообщения чата -->
+    </div>
+
+    <form id="chat-form" action="{{ url('/chat/process-message') }}" method="POST">
+        @csrf
+        <input type="text" name="question" id="question-input" placeholder="Введите ваш вопрос">
+        <button type="submit">Отправить</button>
+    </form>
+</div>
+
+
+
+ <script>
+   $(document).ready(function() {
+    // Обработчик отправки формы
+    $('#chat-form').submit(function(e) {
+        e.preventDefault(); // Предотвращаем отправку формы по умолчанию
+
+        var question = $('#question-input').val(); // Получаем введенный вопрос
+
+        // Отправляем AJAX-запрос на обработку вопроса
+        $.ajax({
+            url: '/chat/process-message',
+            type: 'POST',
+            data: {
+                question: question
+            },
+            success: function(response) {
+                // Обновляем содержимое чата
+                var chatMessages = $('#chat-messages');
+                chatMessages.append('<div class="user-message">' + question + '</div>');
+                chatMessages.append('<div class="assistant-message">' + response + '</div>');
+
+                // Очищаем поле ввода
+                $('#question-input').val('');
+            },
+            error: function(xhr, status, error) {
+                console.error(error); // Обрабатываем ошибку, если есть
+            }
+        });
+    });
+});
+
+</script>
+
+<style>
+    .chat-container {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-family: Arial, sans-serif;
+    }
+
+    .chat-message {
+        margin-bottom: 10px;
+    }
+
+    .user-message {
+        color: blue;
+    }
+
+    .assistant-message {
+        color: green;
+    }
+</style>
+@endsection
